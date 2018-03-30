@@ -154,7 +154,12 @@ cat << EOF
 						<div class="modal-body">
 							<pre>
 EOF
-VideoList
+X=`find -L $(uci get fdicctv.main.folder_tmp)`
+n=1
+for path in $X;do
+printf -- '%s\n' "<a href=\"$path\">$n . ${path##*/}</a>"
+let n=n+1
+done
 cat << EOF
 							</pre>
 						</div>
@@ -179,13 +184,6 @@ if [ "$REQUEST_METHOD" = POST ]; then
 	fi
 	if [ "$(get_post stop)" == 'stop' ];then
 		fdi_cam stop
-	fi
-	if [ "$(get_post list)" == 'list' ];then
-		VideoList(){
-		for path in /www/video/*.avi; do
-			printf -- '%s\n' "<a href=\"/www/video/${path##*/}\">${path##*/}</a>"
-		done
-		}
 	fi
 	if [ "$(get_post alarm)" == 'alarm' ];then
 		fdi_cam alarm
