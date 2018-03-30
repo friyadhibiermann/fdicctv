@@ -1,13 +1,15 @@
 # openwrt fdicctv 1.0.0
 <p>percobaan openwrt fdicctv pertama</p>
 
-<p style="color:red;">pastikan internet di router sudah sedia</p>
-<p style="color:red;">peralatan yang di sediakan:</p>
-<p style="color:red;">router openwrt [daya cukup]</p>
-<p style="color:red;">usb flash / microsd + adapter [exroot]</p>
-<p style="color:red;">web camera uvc/yuv support</p>
-<p style="color:red;">usb hub [ yang recomended ]</p>
-<p style="color:red;">usb audio [soudcard recomended]</p>
+<p>pastikan internet di router sudah sedia</p>
+<p>peralatan yang di sediakan:</p>
+<pre>
+router openwrt [daya cukup]
+usb flash / microsd + adapter [exroot]
+web camera uvc/yuv support
+usb hub [ yang recomended ]
+usb audio [soudcard recomended]
+</pre>
 
 <p>buka putty pada openwrt shell command</p>
 <pre>
