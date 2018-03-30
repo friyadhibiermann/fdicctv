@@ -33,3 +33,7 @@ fdi_cam rec
 fdi_cam mail
 uci show fdicctv
 </pre>
+# preview
+<img src="list.png"></p>
+<img src="setting.png"></p>
+<img src=""></p>
