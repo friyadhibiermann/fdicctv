@@ -24,3 +24,12 @@ chmod 0755 ./install
 
 <p style="color:red;">laporkan jika ada error di group fb OPENWRT INDONSEIA</p>
 <p>mari diskusi</p>
+<p>PENTING DI TEST COMMAND BERIKUT:</p>
+<pre>
+command yang bisa di coba: 
+fdi_cam start
+fdi_cam stop
+fdi_cam rec
+fdi_cam mail
+uci show fdicctv
+</pre>
