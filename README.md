@@ -37,3 +37,4 @@ uci show fdicctv
 <img src="list.JPG"></p>
 <img src="setting.JPG"></p>
 <img src="view.JPG"></p>
+<img src="cron.JPG"></p>
