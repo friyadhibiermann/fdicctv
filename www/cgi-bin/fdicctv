@@ -1,0 +1,202 @@
+#!/bin/sh
+
+    echo "Content-type: text/html"
+    echo ""
+get_post(){
+     for qr in $QUERY_STRING
+     do          
+          if [ "${qr%%=*}" == "$1" ];then              
+              echo ${qr##*=}| sed 's/+/ /g' 
+              break
+          fi 
+     done  
+}
+CSS(){
+cat << EOF
+body {
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+        background: #19405c;
+        /*
+    background-repeat:no-repeat;
+    background: -webkit-linear-gradient( to bottom, #19405c, #769ec3, #c6d6e6);
+    background: -moz-linear-gradient( to bottom, #19405c, #769ec3, #c6d6e6);
+    background: -ms-linear-gradient( to bottom, #19405c, #769ec3, #c6d6e6);
+    background: -o-linear-gradient( to bottom, #19405c, #769ec3, #c6d6e6);
+    background: linear-gradient( to bottom, #19405c, #769ec3, #c6d6e6);
+    background-position: fixed;
+    background-attachment: fixed;
+    background-repeat: center;*/
+    margin: 0;
+    width: 100%;
+    height: auto;
+    text-align:center;
+        font-family: "tahoma";
+        font-size: small;
+}
+.video {
+	
+	background-size: 100% 100%;
+	background-repeat:none;
+	background-color:#000000;
+	color:rgb(255,255,0);
+	border:2px solid #002c75;
+	
+}
+.btn-group input {
+    background-color: #4CAF50; /* Green background */
+    border: 1px solid green; /* Green border */
+	
+    color: white; /* White text */
+    padding: 10px 18px; /* Some padding */
+	margin: 0px 0 12px -3px;
+    cursor: pointer; /* Pointer/hand icon */
+    float: center; /* Float the buttons side by side */
+}
+.button-setting {
+   background-color: #4CAF50; /* Green background */
+    border: 1px solid green; /* Green border */
+    color: white; /* White text */
+    padding: 10px 100px; /* Some padding */
+	margin: 0px 0 px -3px;
+    cursor: pointer; /* Pointer/hand icon */
+    float: center; /* Float the buttons side by side */
+}
+/* Clear floats (clearfix hack) */
+.btn-group:after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.btn-group input:not(:last-child) {
+    border-right: none; /* Prevent double borders */
+}
+
+/* Add a background color on hover */
+.btn-group input:hover {
+    background-color: #3e8e41;
+}
+.img-header {
+	margin-top:25px;
+	margin-bottom:15px;
+}
+EOF
+}
+html(){
+cat << EOF
+<html>
+	<head>
+	</head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<style>
+	$(CSS)
+	</style>
+	<body>
+		<form method="post">
+		<div class='img-header'>
+			<img src='../fdi.png' width='200px' height='auto'></img>
+		</div>
+		<div class="main-box">		
+			<img class="video" width='250px' height='auto' src="http://$(uci get fdicctv.main.ipaddrcctv)"></img>
+		</div><br>
+		<div class="btn-group center">
+			<input name="start" value="start" type="submit"></input>
+			<input name="stop" value="stop" type="submit"></input>
+			<input name="list" value="list" type="button" data-toggle="modal" data-target="#myModal1"></input>
+			<input name="alarm" value="alarm" type="submit"></input><br>
+			
+		</div>
+		<div>
+			<button type="button" class="btn btn-lg btn-primary button-setting" data-toggle="modal" data-target="#myModal">setting</button>
+		</div>
+		<div class="container">
+			<div class="modal fade" id="myModal" role="dialog">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Alarm Sensor Scredule</h4>
+						</div>
+						<div class="modal-body">
+							<div class="input">
+								<label>Start</label><br>
+									<input name="awal" value="$(uci get fdicctv.timer.awal)" type="text"></input><br>
+								<label>Stop</label><br>
+									<input name="akhir" value="$(uci get fdicctv.timer.akhir)" type="text"></input><br>
+							</div>
+							<div class="button">
+								<input name="submit" value="submit" type="submit"></input>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>  
+				</div>
+		  </div>
+		  
+		</div>
+		<div class="container">
+			<div class="modal fade" id="myModal1" role="dialog1">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Daftar Video Ter-Rekam</h4>
+						</div>
+						<div class="modal-body">
+							<pre>
+EOF
+VideoList
+cat << EOF
+							</pre>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</form>
+	</body>
+</html>
+EOF
+}
+if [ "$REQUEST_METHOD" = POST ]; then
+	read -t 3 QUERY_STRING
+	QUERY_STRING=$(echo $QUERY_STRING | sed 's/&/ /g')
+	QUERY_STRING=$(echo $QUERY_STRING | sed 's/%3A/:/g')
+	if [ "$(get_post start)" == 'start' ];then
+		fdi_cam start
+	fi
+	if [ "$(get_post stop)" == 'stop' ];then
+		fdi_cam stop
+	fi
+	if [ "$(get_post list)" == 'list' ];then
+		VideoList(){
+		for path in /www/video/*.avi; do
+			printf -- '%s\n' "<a href=\"/www/video/${path##*/}\">${path##*/}</a>"
+		done
+		}
+	fi
+	if [ "$(get_post alarm)" == 'alarm' ];then
+		fdi_cam alarm
+	fi
+	if [ $(get_post submit) == 'submit' ];then
+		S="$(get_post awal)"
+		A="$(get_post akhir)"
+		uci set fdicctv.timer.awal="$S"
+		uci set fdicctv.timer.akhir="$A"
+		uci commit fdicctv
+	fi
+fi
+
+html

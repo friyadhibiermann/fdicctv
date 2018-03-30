@@ -1,0 +1,16 @@
+#!/bin/sh
+ping 8.8.8.8 -c 3
+if [ $? == 0 ];then
+	opkg update && opkg install bash motion kmod-usb-core kmod-usb2 \
+	kmod-video-core kmod-video-uvc mailsend madplay ffmpeg
+for i in 'usr/bin/fdi_cam usr/bin/ctimer.sh usr/bin/functioncctv';do
+	chmod 0755 $i
+	cp $i /usr/bin/
+done
+chmod 0755 www/cgi-bin/fdicctv
+cp www/cgi-bin/fdicctv /www/cgi-bin/
+cp www/fdi.png /www/fdi.png
+fdi_cam start
+else
+	echo "internet periksa lagi ya bro..."
+fi

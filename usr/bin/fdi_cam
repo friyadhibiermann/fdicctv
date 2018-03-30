@@ -1,0 +1,73 @@
+#/bin/sh
+. /usr/bin/./functioncctv
+Msend(){
+        user=`uci get fdicctv.main.mail`
+	userto=`uci get fdicctv.main.mailto`
+        pass=`uci get fdicctv.main.mpass`
+        mssg=`uci get fdicctv.main.mmsage`
+        mailsend -to $userto -from "$user" -starttls -port 587 -auth -smtp smtp.gmail.com \
+        -sub 'notifikasi cctv' +cc +bc -user $user -pass "$pass" -M "$mssg" -attach $(find -L `uci get fdicctv.main.folder_tmp` -name snapshot.jpg)
+}
+config
+motion_config
+if [ $1 != '' ];then
+case $1 in
+         'start')
+                motion -c /etc/motion.conf > /dev/null 2>&1 &
+                echo "starting"
+         ;;
+         'stop')
+                killall -9 motion
+                echo "stop"
+         ;;
+         'rec')
+                echo "recording"
+                sleep 2
+                clear
+                record
+         ;;
+	'mail')
+		Msend
+	;;
+	'alarm')
+		madplay $(uci get fdicctv.main.alarm)
+	;;
+esac
+
+else
+echo "-----------------------------------"
+echo 
+echo "PERINTAH PILIHAN YANG TERSEDIA"
+echo "25/03/18 FDI SOFTWARE"
+	help
+	read -p "input pilihan : " opt
+	case $opt in
+	'1')
+		if [ $(ps | egrep "motion\|*.conf" | wc -l) -ge 1 ];then
+			echo "motion telah berjalan"
+			record
+		else
+			motion -c /etc/motion.conf > /dev/null 2>&1 &
+			echo "motion sudah dijalankan !! START DEMON..."
+		fi
+	;;
+	'2')
+		killall -9 motion
+		if [ $? == 0 ];then
+			echo "motion telah di hentikan paksa, STOP DEMON..."
+		fi
+	;;
+	'3')
+        	for i in `find -L $(uci get fdicctv.main.folder_tmp) -name "*.jpg"`;do
+			rm $i
+			echo "log jpg $i terhapus"
+		done
+        ;;
+	'4')
+       		find -L $(uci get fdicctv.main.folder_tmp) -name "*.avi"
+        ;;
+	'5')
+        	echo ok
+	;;
+esac
+fi

@@ -1,0 +1,74 @@
+####################################################################
+#daftar perintah
+help(){
+echo "
+----------------------
+1. START FDI CCTV
+2. STOP FDI CCTV
+3. HAPUS REKAMAN / CLEAN
+4. LIST VIDEO TERSIMPAN
+5. SETTING
+----------------------
+"
+}
+####################################################################
+# membuat konfigurasi
+config(){
+for i in `echo $(ls /etc/config/)`;do
+if [ "$(ls /etc/config/ | grep fdicctv | wc -l)" != 1 ];then
+echo "membuat konfigurasi fdicctv"
+cat > /etc/config/fdicctv << EOF
+config fdi-cctv 'main'
+	option folder_tmp '/root/CCTV/TMP'
+	option folder_video '/root/CCTV/VIDEO'
+	option port '8081'
+	option frame '100'
+EOF
+uci show fdicctv
+echo "konfigurasi telah di buat"
+fi
+done
+}
+####################################################################
+# konfigurasi file motion
+motion_config(){
+config
+mot='/etc/motion.conf'
+sed -i "s/framerate*.*/framerate 5/" $mot
+sed -i "s/snapshot_interval*.*/snapshot_interval 10/" $mot
+sed -i "s/#target_dir *.*/target_dir $(uci get fdicctv.main.folder_tmp | sed 's/\//\\\//g')/g" $mot
+sed -i "s/snapshot_filename *.*/snapshot_filename snapshot/g" $mot
+sed -i "s/picture_filename *.*/picture_filename %d%m%Y-%H%M%S-%q/g" $mot
+sed -i "s/stream_port*.*/stream_port $(uci get fdicctv.main.port | sed 's/\//\\\//g')/g" $mot
+sed -i "s/stream_maxrate *.*/stream_maxrate 5/g" $mot
+sed -i 's/stream_localhost on/stream_localhost off/g' /etc/motion.conf
+sed -i 's/locate_motion_mode off/locate_motion_mode on/g' /etc/motion.conf
+
+}
+####################################################################
+
+
+# merekam setiap adanya gerakan
+record(){
+	tmpfolder=`uci get fdicctv.main.folder_tmp`
+	jumfile=$(ls `uci get fdicctv.main.folder_tmp` | wc -l)
+	limit="$(uci get fdicctv.main.frame)"
+
+	if [ "$(ls `uci get fdicctv.main.folder_tmp` | wc -l)" -ge "$limit" ];then
+		echo "rekam"
+		echo "$jumfile $limit"
+		for i in `ls $tmpfolder | grep snap`;do
+			rm $tmpfolder/$i
+		done
+		mkdir -p $tmpfolder/$(date +%d%m%Y%H%M)/ && \
+		cd $tmpfolder && mv *.jpg $tmpfolder/$(date +%d%m%Y%H%M)/ && 
+		cd $tmpfolder/$(date +%d%m%Y%H%M)/ &&
+		cat $tmpfolder/$(date +%d%m%Y%H%M)/*.jpg | ffmpeg -f image2pipe -r 5 -vcodec mjpeg -i - video$(date +%d%m%Y-%H%M).avi
+		for i in $(find -L $tmpfolder -name "*.jpg");do
+			rm $i
+		done
+	else
+		echo "lanjut"
+		echo "$jumfile $limit"
+	fi
+}
