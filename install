@@ -7,6 +7,7 @@ for i in 'usr/bin/fdi_cam usr/bin/ctimer.sh usr/bin/functioncctv';do
 	chmod 0755 $i
 	cp $i /usr/bin/
 done
+if [ -e /etc/motion.conf ];then
 cat > /etc/motion.conf << EOF
 ############################################################
 # Daemon
@@ -759,6 +760,7 @@ on_area_detected sudo /home/pi/tf_files/tweet.sh >> /home/pi/motion.log 2>&1
 ; thread /usr/local/etc/thread3.conf
 ; thread /usr/local/etc/thread4.conf
 EOF
+fi
 chmod 0755 www/cgi-bin/fdicctv
 cp www/cgi-bin/fdicctv /www/cgi-bin/
 cp www/fdi.png /www/fdi.png
