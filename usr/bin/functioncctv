@@ -20,9 +20,19 @@ echo "membuat konfigurasi fdicctv"
 cat > /etc/config/fdicctv << EOF
 config fdi-cctv 'main'
 	option folder_tmp '/root/CCTV/TMP'
-	option folder_video '/root/CCTV/VIDEO'
 	option port '8081'
 	option frame '100'
+	option mail 'email@gmail.com'
+	option mailto 'toemail@gmail'
+	option mpass 'emailpass@gmail'
+	option mmsage 'notifikasi'
+	option alarm '/root/ALARM/alarm.mp3'
+	option ipaddr '192.168.1.1:80'
+	option ipaddrcctv '192.168.1.1:8081'
+config fdi-cctv 'timer'
+	option status '1'
+	option awal '00:00'
+	option akhir '00:00'
 EOF
 uci show fdicctv
 echo "konfigurasi telah di buat"
