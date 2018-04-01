@@ -33,6 +33,8 @@ fdi_cam rec
 fdi_cam mail
 uci show fdicctv
 </pre>
+# crontabs
+echo "*/1 * * * * timer.sh && fdi_cam rec" >> /etc/crontabs/root
 # preview
 <img src="list.JPG"></p>
 <img src="setting.JPG"></p>
