@@ -42,7 +42,7 @@ done
 JM(){
 case $1 in
 	'JAM')
-	if [ $JAM_NOW -le $JAM_SET_START ] && [ $JAM_SET_START -lt $JAM_SET_END ];then
+	if [ $JAM_NOW -ge $JAM_SET_START ] && [ $JAM_SET_START -lt $JAM_SET_END ];then
 		echo "ALARM DI AKTIFKAN"
 		PID="`ps | grep timer | wc -l`"
 		PIDF="`ps | grep fdicctv | wc -l`"	
