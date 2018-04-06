@@ -18,6 +18,11 @@ uci commit fdicctv
 mkdir -p /root/CCTV/TMP
 mkdir -p /root/CCTV/ALARM
 ln -s /root/CCTV/TMP /www/video
+if [ -e root/CCTV/ALARM/alarm.mp3 ];then
+cp -r root/CCTV/ALARM/alarm.mp3 /root/CCTV/ALARM/
+else
+echo "file alarm.mp3 tidak ditemukan"
+fi
 fdi_cam start
 else
 	echo "internet periksa lagi ya bro..."
