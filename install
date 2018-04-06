@@ -15,6 +15,9 @@ IP=`uci get network.lan.ipaddr`
 uci set fdicctv.main.ipaddr="$IP:80"
 uci set fdicctv.main.ipaddrcctv="$IP:8081"
 uci commit fdicctv
+mkdir -p /root/CCTV/TMP
+mkdir -p /root/CCTV/ALARM
+ln -s /root/CCTV/TMP /www/video
 fdi_cam start
 else
 	echo "internet periksa lagi ya bro..."
