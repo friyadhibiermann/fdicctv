@@ -154,10 +154,12 @@ cat << EOF
 						<div class="modal-body">
 							<pre>
 EOF
-X=`find -L $(uci get fdicctv.main.folder_tmp)`
+X=`find -L /www/video/ -name "*.avi"`
 n=1
+Y=$(echo $X | sed 's/\/www\///')
+XY=$(echo $X | awk -F'/' '{print $5}')
 for path in $X;do
-printf -- '%s\n' "<a href=\"$path\">$n . ${path##*/}</a>"
+printf -- '%s\n' "<a href=\"$X\">$n . ${XY}</a>"
 let n=n+1
 done
 cat << EOF
