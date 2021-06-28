@@ -37,7 +37,7 @@ uci show fdicctv
 <pre>
 echo "*/1 * * * * timer.sh && fdi_cam rec" >> /etc/crontabs/root
 </pre>
-Buka di web
+Buka di web<br>
 <a>192.168.1.1/cgi-bin/fdicctv</a>
 # preview
 <img src="list.JPG"></p>
